@@ -35,6 +35,8 @@ dfApp["Price"] = pd.to_numeric(dfApp["Price"], errors='coerce')
 dfApp = dfApp.dropna(subset=["Price"])
 dfApp["Price"] =dfApp["Price"].astype('float64')
 # print(dfApp['Price'][0])
+dfApp['Category'] = dfApp['Category'].str.replace("_"," ")
+dfApp['Category'] = dfApp['Category'].str.lower()
 
 ############### View the data
 # print(dfApp)
@@ -136,6 +138,12 @@ sPrice = dfPriceRaw
 sPrice.drop_duplicates(keep = 'first', inplace = True)
 nPrice = sPrice.values
 dfPrice = pd.DataFrame(nPrice, columns = ['Price'])
+# Android Ver
+sAV = dfAVRaw
+sAV.drop_duplicates(keep = 'first', inplace = True)
+nAV = sAV.values
+dfAndroidV = pd.DataFrame(nAV, columns = ['Android Ver'])
+# print(dfAndroidV)
 
 ############### 1. Total App in Each Category
 # print(len(dfApp[(dfApp['Category'] == dfCategory['Category'][2])]))
@@ -185,7 +193,7 @@ columnsCatCR = ['Category']
 for x in (dfCRating.values):
     columnsCatCR.append(x[0])
 dfSumsCatCR = pd.DataFrame(catCRSumList, columns = columnsCatCR)
-# print(dfSumsCatAll)
+# print(dfSumsCatCR)
 
 ############### Total App Each Content Rating
 sumsCRatAll = []
@@ -230,7 +238,7 @@ totalApp1Price = dfSumsPriceAll.sort_values(by = ['Price'], ascending = True)
 ############### Plot Anything neccessary
 
 ############### Plot Total App Each Category
-fig1 = plt.figure('Figure1 Total App Per Category', figsize = (30,65))
+fig3 = plt.figure('Figure3 Total App Per Category', figsize = (30,65))
 plt.barh(
     totalApp1Category['Category'],
     totalApp1Category['Total App']
@@ -243,39 +251,39 @@ plt.title('Total App Each Category')
 most5SCat = totalApp1Category.tail(5)
 df5MostSCat = pd.DataFrame(most5SCat)
 # print(df5MostSCat)
-# fig2 = plt.figure('Figure2 Top 5 Most Searched Category')
-# plt.pie(
-#     df5MostSCat['Total App'],
-#     labels = df5MostSCat['Category'],
-#     startangle = 90,
-#     autopct = '%1.1f%%',
-#     pctdistance = 0.75
-# )
-# centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
-# fig = plt.gcf()
-# fig.gca().add_artist(centre_circle)
-# plt.axis('equal')
-# plt.title('Top 5 Most Searched Category')
-# plt.tight_layout()
+fig1 = plt.figure('Figure1 Top 5 Most Searched Category')
+plt.pie(
+    df5MostSCat['Total App'],
+    labels = df5MostSCat['Category'],
+    startangle = 90,
+    autopct = '%1.1f%%',
+    pctdistance = 0.75
+)
+centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
+fig = plt.gcf()
+fig.gca().add_artist(centre_circle)
+plt.axis('equal')
+plt.title('Top 5 Most Searched Category')
+plt.tight_layout()
 
 ############### Plot 5 least searched Category
 least5SCat = totalApp1Category.head(5)
 df5leastCat = pd.DataFrame(least5SCat)
 # print(df5leastCat)
-# fig3 = plt.figure('Figure3 Top 5 Least Searched Category')
-# plt.pie(
-#     df5leastCat['Total App'],
-#     labels = df5leastCat['Category'],
-#     startangle = 90,
-#     autopct = '%1.1f%%',
-#     pctdistance = 0.75
-# )
-# centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
-# fig = plt.gcf()
-# fig.gca().add_artist(centre_circle)
-# plt.axis('equal')
-# plt.title('Top 5 Least Searched Category')
-# plt.tight_layout()
+fig2 = plt.figure('Figure2 Top 5 Least Searched Category')
+plt.pie(
+    df5leastCat['Total App'],
+    labels = df5leastCat['Category'],
+    startangle = 90,
+    autopct = '%1.1f%%',
+    pctdistance = 0.75
+)
+centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
+fig = plt.gcf()
+fig.gca().add_artist(centre_circle)
+plt.axis('equal')
+plt.title('Top 5 Least Searched Category')
+plt.tight_layout()
 
 ############### Plot Each Category its Content Rating
 # top5 = dfSumsCatCR[(dfSumsCatCR['Category'] == df5MostSCat['Category'][4])]
@@ -298,30 +306,31 @@ df5leastCat = pd.DataFrame(least5SCat)
 # plt.tight_layout()
 
 ############### Plot Most Content Rating 
-# fig4 = plt.figure('Figure4 Most Content Rating', figsize = (30,65))
-# plt.barh(
-#     totalApp1CRating['Content Rating'],
-#     totalApp1CRating['Total App']
-# )
-# for i in range(len(totalApp1CRating)):
-#     plt.text(totalApp1CRating['Total App'][i],totalApp1CRating['Content Rating'][i], totalApp1CRating['Total App'][i])
-# plt.title('Most Content Rating')
+fig4 = plt.figure('Figure4 Most Content Rating', figsize = (30,65))
+plt.barh(
+    totalApp1CRating['Content Rating'],
+    totalApp1CRating['Total App']
+)
+for i in range(len(totalApp1CRating)):
+    plt.text(totalApp1CRating['Total App'][i],totalApp1CRating['Content Rating'][i], totalApp1CRating['Total App'][i])
+plt.title('Most Content Rating')
 
 ############### Plot Total App Each Type 
-# fig4 = plt.figure('Figure5 Total App Each Type')
-# plt.pie(
-#     totalApp1Type['Total App'],
-#     labels = totalApp1Type['Type'],
-#     startangle = 90,
-#     autopct = '%1.1f%%',
-#     pctdistance = 0.75
-# )
-# centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
-# fig = plt.gcf()
-# fig.gca().add_artist(centre_circle)
-# plt.axis('equal')
-# plt.tight_layout()
-# plt.title('Total App Each Type')
-# plt.show()
+fig5 = plt.figure('Figure5 Total App Each Type')
+plt.pie(
+    totalApp1Type['Total App'],
+    labels = totalApp1Type['Type'],
+    startangle = 90,
+    autopct = '%1.1f%%',
+    pctdistance = 0.75
+)
+centre_circle = plt.Circle((0,0), 0.60, fc = 'White')
+fig = plt.gcf()
+fig.gca().add_artist(centre_circle)
+plt.axis('equal')
+plt.title('Total App Each Type')
+plt.tight_layout()
+
+plt.show()
 
 

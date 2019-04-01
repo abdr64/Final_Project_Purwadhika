@@ -16,9 +16,9 @@ def konversi(a):
         suffix = a[-1:]
 
         if suffix == 'M':
-            value = value * 1024 * 1024
+            value = value * 1
         elif suffix == 'K':
-            value = value * 1024
+            value = value / 1024
     except ValueError:
         value = 0
     return value
@@ -36,6 +36,7 @@ dfApp = dfApp.dropna(subset=["Price"])
 dfApp["Price"] =dfApp["Price"].astype('float64')
 dfApp['Rating'] = dfApp['Rating'].fillna(0)
 # print(dfApp['Price'][0])
+print(dfApp)
 
 ############### View the data
 # print(dfApp)
@@ -230,8 +231,11 @@ totalApp1Price = dfSumsPriceAll.sort_values(by = ['Price'], ascending = True)
 
 ############### Machine-Learning
 ####### Preparation for model training
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
+from sklearn.preprocessing import MinMaxScaler
+std = MinMaxScaler()
+x = std.fit_transform(dfApp[['Installs']])
+y = std.fit_transform(dfApp[['Reviews']])
+
 ### 2. bases : Size and Type
 # print(dfApp[(dfApp['Type'] == dfType['Type'][0])])
 
@@ -239,8 +243,8 @@ scaler = StandardScaler()
 from sklearn.model_selection import train_test_split
 ####### 1. Split train first plan
 xtrain1,xtest1,ytrain1,ytest1 = train_test_split(
-    dfApp[['Size']],
-    dfApp['Rating'],
+    dfApp[['Installs']],
+    dfApp['Reviews'],
     test_size = .1
 )
 # print(xtrain1)
@@ -252,22 +256,22 @@ model1 = LinearRegression()
 model1.fit(xtrain1, ytrain1)
 
 ## 1. Accuracy
-print(model1.score(xtest1,ytest1))
+print(model1.score(xtrain1,ytrain1))
 
 ## 1. prediction
 print(model1.predict(xtest1))
 
 ## 1. plot actual data
-fig1 = plt.figure('Rating Based on App Sizes', figsize = (30,65))
+fig1 = plt.figure('Rating Based on App Installs', figsize = (30,65))
 plt.plot(
-    dfApp['Size'],
-    dfApp['Rating'],
+    dfApp['Reviews'],
+    dfApp['Installs'],
     marker = 'o',
     color = 'g'
 )
 ## 1. plot prediction data
 plt.plot(
-    dfApp['Size'],
+    dfApp['Reviews'],
     model1.predict(dfApp[['Size']]),
     marker = 'o',
     color = 'r'
